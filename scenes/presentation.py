@@ -1,19 +1,18 @@
-from turtle import width
 from manim import *
 from manim_slides import *
 from PIL import Image
 import numpy as np
 
-
-def create_image(path: str, size: tuple[int, int] = None) -> ImageMobject:
-    with Image.open(path) as im:
-        if size is not None:
-            im.thumbnail(size, resample=Image.BOX)
-        image = ImageMobject(np.asarray(im))
-        return image
+from utils import WrappedImage, PixelsFromVect
 
 
-class Presentation(Slide):
+def read_and_downsample(filename: str, size: tuple[int, int]):
+    with Image.open(filename) as im:
+        im.thumbnail(size, Image.Resampling.BOX)
+        return np.asarray(im)
+
+
+class Presentation(Scene):
     def construct(self):
         text = Tex(r"Trabajo final\\de\\Inteligencia Artificial", font_size=80)
         title = Tex(
@@ -25,11 +24,15 @@ class Presentation(Slide):
         self.play(Write(text))
         self.pause()
 
-        jorge_image = create_image("resources/jorgeajimenezl.png")
-        jorge_image.add(Text("Jorge Alejandro Jiménez Luna").scale(0.5).next_to(jorge_image, UP))
+        jorge_image = ImageMobject("resources/jorgeajimenezl.png")
+        jorge_image.add(
+            Text("Jorge Alejandro Jiménez Luna").scale(0.5).next_to(jorge_image, UP)
+        )
 
-        luis_image = create_image("resources/Lcasan.png")
-        luis_image.add(Text("Luis Miguel Casañ Gonzáles").scale(0.5).next_to(luis_image, DOWN))
+        luis_image = ImageMobject("resources/Lcasan.png")
+        luis_image.add(
+            Text("Luis Miguel Casañ Gonzáles").scale(0.5).next_to(luis_image, DOWN)
+        )
 
         authors = Group(jorge_image, luis_image)
         authors.arrange()
@@ -43,27 +46,53 @@ class Presentation(Slide):
                     font_size=65,
                 ).to_corner(UP),
             ),
-            FadeIn(authors)
+            FadeIn(authors),
         )
         self.pause()
 
         title.to_corner(UP)
 
-        image = create_image("resources/example-image.png")
-        image = (
-            image.add(SurroundingRectangle(image, BLUE_A, buff=0.015))
-            .scale(3.5)
+        # Semantic segmentation image example
+        image = WrappedImage(
+            PixelsFromVect(read_and_downsample("resources/example-image.png", (50, 50)))
+            .scale(16.0)
+            .next_to(title, DOWN),
+            # color=GREY_B,
+            # buff=0,
+        )        
+        mask = (
+            PixelsFromVect(read_and_downsample("resources/example-mask.png", (50, 50)))
+            .set_stroke(WHITE)
+            .scale(16.0)
             .next_to(title, DOWN)
         )
+        image[1].sort(lambda p: np.dot(p, DOWN + RIGHT))
+        mask.sort(lambda p: np.dot(p, DOWN + RIGHT))
+
+        cp = image[1].copy()
+        # cp.sort(lambda p: np.dot(p, DOWN + RIGHT))
 
         self.play(
             FadeOut(authors),
             Transform(text, title),
-            FadeIn(image)
+            FadeIn(image[0]),
+            LaggedStartMap(FadeIn, image[1]),
+        )
+        self.wait()
+        self.play(
+            LaggedStartMap(
+                DrawBorderThenFill,
+                cp,
+                run_time=3,
+                stroke_color=WHITE,
+                remover=False,
+            ),
+            LaggedStartMap(FadeOut, image[1]),
+            LaggedStartMap(FadeIn, mask),            
         )
         self.pause()
 
-        group = Group(text, image)
+        group = Group(text, image, mask, cp)
         self.play(FadeOut(group))
         self.pause()
 
