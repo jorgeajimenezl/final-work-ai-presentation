@@ -1,5 +1,6 @@
 from manim import *
 
+
 class UNet(Scene):
     def construct(self):
         text = Text("Qué es segmentación semántica?")

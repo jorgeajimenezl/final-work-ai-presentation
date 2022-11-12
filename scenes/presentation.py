@@ -1,15 +1,7 @@
 from manim import *
-from PIL import Image
-import numpy as np
 import itertools as it
 
-from utils import WrappedImage, PixelsFromVect
-
-
-def read_and_downsample(filename: str, size: tuple[int, int]):
-    with Image.open(filename) as im:
-        im.thumbnail(size, Image.Resampling.BOX)
-        return np.asarray(im)
+from utils import WrappedImage, PixelsFromVect, read_and_downsample
 
 
 class Presentation(Scene):
@@ -59,7 +51,7 @@ class Presentation(Scene):
             .next_to(title, DOWN),
             # color=GREY_B,
             # buff=0,
-        )        
+        )
         mask = (
             PixelsFromVect(read_and_downsample("resources/example-mask.png", (50, 50)))
             .set_stroke(WHITE)
@@ -88,8 +80,8 @@ class Presentation(Scene):
                 remover=False,
             ),
             LaggedStartMap(FadeOut, image[1]),
-            LaggedStartMap(FadeIn, mask),            
-        )        
+            LaggedStartMap(FadeIn, mask),
+        )
         self.pause()
 
         for c in it.chain(image[1], cp):

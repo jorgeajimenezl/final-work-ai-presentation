@@ -1,4 +1,6 @@
 from manim import *
+from PIL import Image
+import numpy as np
 
 
 class PixelsAsSquares(VGroup):
@@ -37,3 +39,9 @@ class WrappedImage(Group):
         Group.__init__(self, **kwargs)
         rect = SurroundingRectangle(image_mobject, color=BLUE, buff=SMALL_BUFF)
         self.add(rect, image_mobject)
+
+
+def read_and_downsample(filename: str, size: tuple[int, int]) -> np.ndarray:
+    with Image.open(filename) as im:
+        im.thumbnail(size, Image.Resampling.BOX)
+        return np.asarray(im)
