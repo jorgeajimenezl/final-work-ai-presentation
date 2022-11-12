@@ -2,6 +2,7 @@ from manim import *
 from manim_slides import *
 from PIL import Image
 import numpy as np
+import itertools as it
 
 from utils import WrappedImage, PixelsFromVect
 
@@ -89,11 +90,11 @@ class Presentation(Scene):
             ),
             LaggedStartMap(FadeOut, image[1]),
             LaggedStartMap(FadeIn, mask),            
-        )
+        )        
         self.pause()
 
-        group = Group(text, image, mask, cp)
-        self.play(FadeOut(group))
-        self.pause()
+        for c in it.chain(image[1], cp):
+            self.remove(c)
 
+        self.play(FadeOut(text, mask, image[0]))
         self.wait()
