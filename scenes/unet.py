@@ -1,9 +1,13 @@
 from manim import *
-from manim_slides import *
 
 class UNet(Scene):
     def construct(self):
-        text = MarkupText("Qué es segmentación semántica? 🤔")
+        text = Text("Qué es segmentación semántica?")
         self.play(Write(text))
+        self.pause()
+
+        self.play(
+            text.animate.scale(0.8).to_corner(UP),
+        )
 
         self.wait()

@@ -1,5 +1,4 @@
 from manim import *
-from manim_slides import *
 from PIL import Image
 import numpy as np
 import itertools as it
