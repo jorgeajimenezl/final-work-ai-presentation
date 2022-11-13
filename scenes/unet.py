@@ -145,5 +145,14 @@ class UNet(Scene):
             ),
         )
         self.pause()
+        self.play(FadeOut(image))
+
+        self.play(
+            title.animate.become(
+                Text("Aplicaciones", color=BLUE).move_to(title).scale(0.8)
+            ),
+        )
+
+        
 
         self.wait()
