@@ -6,7 +6,7 @@ class ImageStrcut(Scene):
     def construct(self):
         # image
         image = WrappedImage(
-            PixelsFromVect(read_image("resources/mario.png", (32, 32))).scale(30.0)
+            PixelsFromVect(read_image("resources/mario.png", (32, 32))).scale(20.0)
         )
 
         # copy
@@ -73,22 +73,23 @@ class ImageStrcut(Scene):
 
         models = [Text("EG"), Text("RGB"), Text("RGBA")]
         change_color = "red"
-
+        image[1].set_opacity(0)
         for i, ob in enumerate([gray, transparence, color]):
-            models[i].next_to(ob, RIGHT)
-            models[i].scale(0.7)
-            self.play(Create(models[i]))
             for n in 2, 0, 1, 4:
                 self.play(rect.animate.move_to(ob[n]))
                 if ob == transparence:
+                    cp.set_opacity(1)
                     pixel.set_opacity(ob[n].get_fill_opacity())
+                    for px in cp:
+                        if str(px.get_color()) == change_color:
+                            px.set_opacity(ob[n].get_fill_opacity())
                 else:
                     pixel.set_color(ob[n].get_color())
 
-                    for sq in cp:
-                        if str(sq.get_color()) == change_color:
-                            sq.set_fill(ob[n].get_color())
-
-                    change_color = str(ob[n].get_color())
+                for px in cp:
+                    if str(px.get_color()) == change_color:
+                        px.set_fill(ob[n].get_color())
+                
+                change_color = str(ob[n].get_color())
 
         self.wait()
