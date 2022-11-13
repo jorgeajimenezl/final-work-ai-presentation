@@ -1,12 +1,12 @@
 from manim import *
-from utils import WrappedImage, PixelsFromVect, read_and_downsample
+from utils import WrappedImage, PixelsFromVect, read_image
 
 
 class ImageStrcut(Scene):
     def construct(self):
         #image
         image = WrappedImage(
-            PixelsFromVect(read_and_downsample("resources/mario.png", (32, 32)))
+            PixelsFromVect(read_image("resources/mario.png", (32, 32)))
             .scale(30.0)
         )
 
