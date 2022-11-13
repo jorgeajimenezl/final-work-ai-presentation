@@ -1,7 +1,7 @@
 from manim import *
 import itertools as it
 
-from utils import WrappedImage, PixelsFromVect, read_and_downsample
+from utils import WrappedImage, PixelsFromVect, read_image
 
 
 class Presentation(Scene):
@@ -46,14 +46,14 @@ class Presentation(Scene):
 
         # Semantic segmentation image example
         image = WrappedImage(
-            PixelsFromVect(read_and_downsample("resources/example-image.png", (50, 50)))
+            PixelsFromVect(read_image("resources/example-image.png", (50, 50)))
             .scale(16.0)
             .next_to(title, DOWN),
             # color=GREY_B,
             # buff=0,
         )
         mask = (
-            PixelsFromVect(read_and_downsample("resources/example-mask.png", (50, 50)))
+            PixelsFromVect(read_image("resources/example-mask.png", (50, 50)))
             .set_stroke(WHITE)
             .scale(16.0)
             .next_to(title, DOWN)

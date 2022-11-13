@@ -1,12 +1,11 @@
 from manim import *
-from utils import WrappedImage, PixelsFromVect, read_and_downsample
+from utils import WrappedImage, PixelsFromVect, read_image
 
 
 class ComputerVision(Scene):
     def construct(self):
         image = WrappedImage(
-            PixelsFromVect(read_and_downsample("resources/mario.png", (32, 32)))
-            .scale(30.0)
+            PixelsFromVect(read_image("resources/mario.png", (32, 32))).scale(20.0)
         )
 
         cp = image[1].copy()
@@ -24,5 +23,6 @@ class ComputerVision(Scene):
                 remover=False,
             ),
         )
-        
+
         self.wait()
+        self.play(FadeOut(cp, image))

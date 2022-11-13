@@ -41,7 +41,8 @@ class WrappedImage(Group):
         self.add(rect, image_mobject)
 
 
-def read_and_downsample(filename: str, size: tuple[int, int]) -> np.ndarray:
+def read_image(filename: str, size: tuple[int, int] = None) -> np.ndarray:
     with Image.open(filename) as im:
-        im.thumbnail(size, Image.Resampling.BOX)
+        if size is not None:
+            im.thumbnail(size, Image.Resampling.BOX)
         return np.asarray(im)
