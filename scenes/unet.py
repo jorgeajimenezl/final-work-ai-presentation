@@ -30,46 +30,30 @@ class UNet(Scene):
         self.pause()
 
         # Set bounding boxes
-        car_box = (
-            VGroup(
-                Rectangle(width=2.2, height=1).set_stroke(RED),
-                Text("Car [1]", color=RED).scale(0.3),
-            )
+        bound_box = (
+            Rectangle(width=2.2, height=1)
+            .set_stroke(RED)
             .arrange(DOWN, buff=SMALL_BUFF)
-            .next_to(image.get_center(), RIGHT * 0.8)
+            .move_to(image[1].get_center() + RIGHT * 1.2 + UP * 0.1)
         )
 
-        tree_1_box = (
-            VGroup(
-                Text("Tree [2]", color=YELLOW).scale(0.3),
-                Rectangle(width=1.2, height=2).set_stroke(YELLOW),
-            )
-            .arrange(DOWN, buff=SMALL_BUFF)
-            .next_to(image.get_center(), RIGHT * 2.95 + UP * 1.5)
-        )
-
-        tree_2_box = (
-            VGroup(
-                Text("Tree [2]", color=YELLOW).scale(0.3),
-                Rectangle(width=0.8, height=1.2).set_stroke(YELLOW),
-            )
-            .arrange(DOWN, buff=SMALL_BUFF)
-            .next_to(image.get_center(), RIGHT * 1.5 + UP * 1)
-        )
-
+        self.play(Create(bound_box))
+        self.wait(2)
         self.play(
-            LaggedStartMap(Create, car_box),
-            LaggedStartMap(Create, tree_1_box),
-            LaggedStartMap(Create, tree_2_box),
+            bound_box.animate.stretch_to_fit_width(1.3)
+            .stretch_to_fit_height(2.6)
+            .move_to(image[1].get_center() + RIGHT * 3.6 + UP * 1.5),
+        )
+        self.wait(2)
+        self.play(
+            bound_box.animate.stretch_to_fit_width(0.8)
+            .stretch_to_fit_height(1.6)
+            .move_to(image[1].get_center() + RIGHT * 1.8 + UP),
         )
 
         self.pause()
 
-        self.play(
-            LaggedStartMap(Uncreate, car_box),
-            LaggedStartMap(Uncreate, tree_1_box),
-            LaggedStartMap(Uncreate, tree_2_box),
-        )
+        self.play(Uncreate(bound_box))
         self.wait()
 
         self.play(
@@ -152,7 +136,5 @@ class UNet(Scene):
                 Text("Aplicaciones", color=BLUE).move_to(title).scale(0.8)
             ),
         )
-
-        
 
         self.wait()
