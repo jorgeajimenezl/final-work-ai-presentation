@@ -72,16 +72,15 @@ class UNet(Scene):
         )
         self.wait()
 
-        mask_vect = get_mask(read_image("resources/segm-mask.png")[:, :, 0])
         self.play(
             title.animate.become(
                 Text("Segmentación semántica?", color=BLUE).move_to(title).scale(0.8)
             ),
-            Transform(
-                image[1],
-                ImageMobject(mask_vect).scale(1.8).shift(DOWN * 0.5),
-                replace_mobject_with_target_in_scene=True,
-            ),
+            # Transform(
+            #     image[1],
+            #     ImageMobject(mask_vect).scale(1.8).shift(DOWN * 0.5),
+            #     replace_mobject_with_target_in_scene=True,
+            # ),
         )
         self.pause()
 
@@ -98,7 +97,7 @@ class UNet(Scene):
 
         numbers = VGroup()
         mask_id = read_image("resources/segm-mask.png", (32, 24))[:, :, 0]
-        # mapped_mask_id = get_mask(mask_id, "viridis_r")
+        mask_cmap = get_mask(mask_id, "hsv")
 
         p = 0
         for y in range(24):
@@ -109,24 +108,42 @@ class UNet(Scene):
 
                 num.set_stroke(width=1)
 
-                # rgb = mapped_mask_id[y, x, :3]
+                rgb = mask_cmap[y, x, :3]
                 num.scale_to_fit_height(0.5 * square.width)
-                # num.set_color(rgb_to_color(rgb / 255))
+                num.set_color(rgb_to_color(rgb / 255))
                 num.move_to(square)
                 numbers.add(num)
 
         pixels.sort(lambda p: np.dot(p, DOWN + RIGHT))
 
         self.play(
+            image[1].animate.set_opacity(0.5),
             LaggedStartMap(
                 Create,
                 pixels,
                 run_time=3,
                 stroke_color=WHITE,
                 remover=False,
-            )
+            ),
         )
 
         self.play(Write(numbers))
+        self.pause()
+
+        self.play(
+            FadeOut(numbers),
+            FadeOut(pixels),
+            image[1].animate.set_opacity(1.0),
+        )
+
+        mask_vect = get_mask(read_image("resources/segm-mask.png")[:, :, 0], "hsv")
+        self.play(
+            Transform(
+                image[1],
+                ImageMobject(mask_vect).scale(1.8).shift(DOWN * 0.5),
+                replace_mobject_with_target_in_scene=True,
+            ),
+        )
+        self.pause()
 
         self.wait()

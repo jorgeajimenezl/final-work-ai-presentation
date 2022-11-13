@@ -41,8 +41,12 @@ class WrappedImage(Group):
         self.add(rect, image_mobject)
 
 
-def read_image(filename: str, size: tuple[int, int] = None) -> np.ndarray:
+def read_image(
+    filename: str,
+    size: tuple[int, int] = None,
+    resample: Image.Resampling = Image.Resampling.NEAREST,
+) -> np.ndarray:
     with Image.open(filename) as im:
         if size is not None:
-            im.thumbnail(size, Image.Resampling.BOX)
+            im.thumbnail(size, resample)
         return np.asarray(im)
