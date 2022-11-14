@@ -12,10 +12,32 @@ def get_mask(array, colormap: str = "viridis"):
 
 class UNet(Scene):
     def construct(self):
+        # Make title
         title = Text("Detección de objectos")
         self.play(Write(title))
         self.pause()
 
+        # Explanation about semantic segmentation section
+        self.section_001(title)
+
+        # Change title
+        self.play(
+            title.animate.become(Text("Aplicaciones", color=BLUE).replace(title)),
+        )
+
+        # Applications section
+        self.section_002(title)
+
+        # Change title
+        self.play(
+            title.animate.become(Text("Cómo resolverlo?", color=BLUE).replace(title)),
+        )
+
+        # Play explanation
+
+        self.wait()
+
+    def section_001(self, title: Text) -> None:
         image = WrappedImage(
             ImageMobject("resources/segm.png").scale(1.8).shift(DOWN * 0.5)
         )
@@ -58,7 +80,7 @@ class UNet(Scene):
 
         self.play(
             title.animate.become(
-                Text("Segmentación semántica?", color=BLUE).move_to(title).scale(0.8)
+                Text("Segmentación semántica?", color=BLUE).replace(title)
             ),
             # Transform(
             #     image[1],
@@ -136,7 +158,7 @@ class UNet(Scene):
         # Save state of (image, pixel square, pixel number)
         tmp_group = Group(image, pixel_map[pixel_index][0], pixel_map[pixel_index][1])
         pos = tmp_group.get_center()
-        self.play(tmp_group.animate.scale(0.5).move_to(LEFT * 3))
+        self.play(tmp_group.animate.scale(0.8).move_to(LEFT * 3))
 
         # Write classes
         classes = (
@@ -165,19 +187,19 @@ class UNet(Scene):
             FadeOut(classes),
             FadeOut(tmp_box),
             FadeOut(arrow),
-            tmp_group.animate.scale(2).move_to(pos),
+            # tmp_group.animate.scale(2).move_to(pos),
         )
 
         # Go back to restore everything
         self.wait()
         self.play(
-            FadeOut(numbers),
-            FadeOut(pixels),
+            FadeOut(pixel_map[pixel_index][0]),
+            FadeOut(pixel_map[pixel_index][1]),
             image[1].animate.set_opacity(1.0),
         )
 
         mask_vect = get_mask(read_image("resources/segm-mask.png")[:, :, 0], "hsv")
-        mask_image = ImageMobject(mask_vect).scale(1.8).shift(DOWN * 0.5)
+        mask_image = ImageMobject(mask_vect).replace(image[1])
         self.play(
             Transform(
                 image[1],
@@ -185,14 +207,37 @@ class UNet(Scene):
                 replace_mobject_with_target_in_scene=True,
             ),
         )
+
+        features_text = (
+            Tex(
+                r"""
+            \begin{itemize}
+            \item Etiqueta cada pixel
+            \item No existe diferencias entre\\instancias de una misma\\clase
+            \end{itemize}
+            """
+            )
+            .scale(0.9)
+            .move_to(RIGHT * 4)
+        )
+        self.play(Write(features_text))
+
         self.pause()
         self.remove(mask_image)
-        self.play(FadeOut(image))
+        self.play(FadeOut(image), Uncreate(features_text))
 
-        self.play(
-            title.animate.become(
-                Text("Aplicaciones", color=BLUE).move_to(title).scale(0.8)
-            ),
-        )
+    def section_002(self, title: Text) -> None:
+        medical_images = Group(
+            Group(
+                ImageMobject("resources/medical-application-01.png").scale(2.0),
+                Text("Radiografía de tórax").scale(0.5),
+            ).arrange(DOWN),
+            Group(
+                ImageMobject("resources/medical-application-02.png").scale(2.0),
+                Text("Resonancia magnética del cerebro").scale(0.5),
+            ).arrange(DOWN, SMALL_BUFF),
+        ).arrange(buff=LARGE_BUFF)
 
-        self.wait()
+        self.play(FadeIn(medical_images))
+        self.pause()
+        self.play(FadeOut(medical_images))

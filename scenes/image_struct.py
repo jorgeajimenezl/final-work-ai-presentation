@@ -89,7 +89,7 @@ class ImageStrcut(Scene):
                 for px in cp:
                     if str(px.get_color()) == change_color:
                         px.set_fill(ob[n].get_color())
-                
+
                 change_color = str(ob[n].get_color())
 
         self.wait()
