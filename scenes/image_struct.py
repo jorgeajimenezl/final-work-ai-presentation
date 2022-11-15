@@ -71,10 +71,13 @@ class ImageStrcut(Scene):
         rect = SurroundingRectangle(gray[4], buff=SMALL_BUFF)
         self.play(Create(rect))
 
-        models = [Text("EG"), Text("RGB"), Text("RGBA")]
+        models = [Text("EG"), Text("RGBA"), Text("RGB")]
         change_color = "red"
         image[1].set_opacity(0)
         for i, ob in enumerate([gray, transparence, color]):
+            models[i].next_to(ob, RIGHT)
+            models[i].scale(0.7)
+            self.play(Create(models[i]))
             for n in 2, 0, 1, 4:
                 self.play(rect.animate.move_to(ob[n]))
                 if ob == transparence:
@@ -89,7 +92,7 @@ class ImageStrcut(Scene):
                 for px in cp:
                     if str(px.get_color()) == change_color:
                         px.set_fill(ob[n].get_color())
-
+                
                 change_color = str(ob[n].get_color())
 
         self.wait()
