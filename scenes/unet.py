@@ -1,7 +1,13 @@
 from manim import *
 from utils import WrappedImage, read_image
+from layers import Convolutional3DToImage
 import matplotlib as mpl
+import itertools as it
 from manim_ml.neural_network.neural_network import NeuralNetwork
+from manim_ml.neural_network.layers import *
+
+# Hack connective list
+connective_layers_list.append(Convolutional3DToImage)
 
 
 def get_mask(array, colormap: str = "viridis"):
@@ -9,6 +15,10 @@ def get_mask(array, colormap: str = "viridis"):
     a, b = array.min(), array.max()
 
     return (cm((array - a) / (b - a)) * 255).astype(np.uint8)
+
+
+def repeat_animation(times: int, anim: Animation):
+    return Succession(*[anim.copy() for _ in range(times)])
 
 
 class UNet(Scene):
@@ -247,4 +257,108 @@ class UNet(Scene):
         self.play(FadeOut(medical_images))
 
     def section_003(self, title: Text) -> None:
-        pass
+        in_image = ImageLayer(read_image("resources/example-image.png")).scale(2.0)
+
+        down_block1 = (
+            Group(
+                Convolutional3DLayer(3, 10, 10, filter_spacing=0.2),
+                Convolutional3DLayer(3, 10, 10, filter_spacing=0.2),
+            )
+            .arrange(buff=0.01)
+            .scale(0.5).next_to(in_image, RIGHT)
+        )
+
+        down_block2 = (
+            Group(
+                Convolutional3DLayer(6, 5, 5, filter_spacing=0.2),
+                Convolutional3DLayer(6, 5, 5, filter_spacing=0.2),
+            )
+            .arrange(buff=0.01)
+            .scale(0.5)
+            .next_to(down_block1, DR)
+        )
+
+        down_block3 = (
+            Group(
+                Convolutional3DLayer(12, 2, 2, filter_spacing=0.2),
+                Convolutional3DLayer(12, 2, 2, filter_spacing=0.2),
+            )
+            .arrange(buff=0.01)
+            .scale(0.5)
+            .next_to(down_block2, DR)
+        )
+
+        center_block = (
+            Group(
+                Convolutional3DLayer(24, 1, 1, color=GREEN, filter_spacing=0.2),
+            )
+            .arrange(buff=0.01)
+            .scale(0.5)
+            .next_to(down_block3, DR)
+        )
+
+        up_block3 = (
+            Group(
+                Convolutional3DLayer(12, 2, 2, color=PURPLE, filter_spacing=0.2),
+                Convolutional3DLayer(12, 2, 2, color=PURPLE, filter_spacing=0.2),
+            )
+            .arrange(buff=0.01)
+            .scale(0.5)
+            .next_to(center_block, UR)
+        )
+
+        up_block2 = (
+            Group(
+                Convolutional3DLayer(6, 5, 5, color=PURPLE, filter_spacing=0.2),
+                Convolutional3DLayer(6, 5, 5, color=PURPLE, filter_spacing=0.2),
+            )
+            .arrange(buff=0.01)
+            .scale(0.5)
+            .next_to(up_block3, UR)
+        )
+
+        up_block1 = (
+            Group(
+                Convolutional3DLayer(3, 10, 10, color=PURPLE, filter_spacing=0.2),
+                Convolutional3DLayer(3, 10, 10, color=PURPLE, filter_spacing=0.2)
+            )
+            .arrange(buff=0.01)
+            .scale(0.5)
+            .next_to(up_block2, UR)
+        )
+
+        out_image = ImageLayer(read_image("resources/example-mask.png")).next_to(up_block1, RIGHT * 7).scale(2.0)
+
+        skip_conn_1 = Line(start=LEFT * 3, end=RIGHT * 3).shift(UP * 1.5)
+        skip_conn_2 = Line(start=LEFT * 2, end=RIGHT * 2).shift(DOWN * 1.0)
+        skip_conn_3 = Line(start=LEFT * 0.5, end=RIGHT * 0.5).shift(DOWN * 2.1)
+
+        nn = NeuralNetwork(
+            it.chain(
+                [in_image],
+                down_block1,
+                down_block2,
+                down_block3,
+                center_block,
+                up_block3,
+                up_block2,
+                up_block1,
+                [out_image],
+            ),
+            arrange_layers=False,
+        ).scale(0.5)
+
+        self.play(FadeIn(nn))
+        self.wait()
+        
+        self.play(
+            nn.make_forward_pass_animation(run_time=15),
+            repeat_animation(4, ShowPassingFlash(skip_conn_1)),
+            repeat_animation(4, ShowPassingFlash(skip_conn_2)),
+            repeat_animation(4, ShowPassingFlash(skip_conn_3)),
+        )
+        self.pause()
+
+        self.play(FadeOut(nn))
+
+

@@ -15,7 +15,9 @@ class ConvolutionalNeuralNetwork(ThreeDScene):
         self.section_001()
 
         self.play(
-            title.animate.become(Text("Convolución?", color=BLUE).replace(title).scale(0.7)),
+            title.animate.become(
+                Text("Convolución?", color=BLUE).replace(title).scale(0.7)
+            ),
         )
         self.wait()
 
@@ -88,7 +90,7 @@ class ConvolutionalNeuralNetwork(ThreeDScene):
             FadeOut(layer3),
             FadeOut(fully1),
             FadeOut(fully2),
-            Unwrite(features_text)
+            Unwrite(features_text),
         )
 
     def section_002(self):
