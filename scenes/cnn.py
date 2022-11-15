@@ -23,8 +23,8 @@ class ConvolutionalNeuralNetwork(ThreeDSlide):
         self.wait()
 
         self.section_002()
-
-        self.wait()
+        
+        self.pause()
 
     def section_001(self):
         layer1 = (
@@ -117,3 +117,5 @@ class ConvolutionalNeuralNetwork(ThreeDSlide):
                 buff=6
             )
         )
+
+        self.wait()

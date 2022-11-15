@@ -27,6 +27,7 @@ class UNet(Slide):
         # Make title
         title = Text("Detección de objectos")
         self.play(Write(title))
+        self.wait()
         self.pause()
 
         # Explanation about semantic segmentation section
@@ -60,6 +61,7 @@ class UNet(Slide):
         # Play advantages explanation
         self.section_004(title)
 
+        self.wait()
         self.pause()
 
     def section_001(self, title: Text) -> None:
