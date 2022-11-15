@@ -1,4 +1,5 @@
 from manim import *
+from manim_slides import *
 from utils import WrappedImage, read_image
 from layers import Convolutional3DToImage
 import matplotlib as mpl
@@ -21,35 +22,45 @@ def repeat_animation(times: int, anim: Animation):
     return Succession(*[anim.copy() for _ in range(times)])
 
 
-class UNet(Scene):
+class UNet(Slide):
     def construct(self):
         # Make title
         title = Text("Detección de objectos")
-        # self.play(Write(title))
-        # self.pause()
+        self.play(Write(title))
+        self.pause()
 
         # Explanation about semantic segmentation section
-        # self.section_001(title)
+        self.section_001(title)
 
         # Change title
-        # self.play(
-        #     title.animate.become(Text("Aplicaciones", color=BLUE).replace(title)),
-        # )
+        self.play(
+            title.animate.become(Text("Aplicaciones", color=BLUE).replace(title)),
+        )
 
         # Applications section
-        # self.section_002(title)
+        self.section_002(title)
 
         # Change title
-        # self.play(
-        #     title.animate.become(
-        #         Text("Cómo resolverlo? U-Net", color=BLUE).replace(title)
-        #     ),
-        # )
+        self.play(
+            title.animate.become(
+                Text("Cómo resolverlo? U-Net", color=BLUE).replace(title)
+            ),
+        )
 
-        # Play explanation
+        # Play UNet explanation
         self.section_003(title)
 
-        self.wait()
+        # Change title
+        self.play(
+            title.animate.become(
+                Text("Ventajas", color=BLUE).replace(title).scale(0.5)
+            ),
+        )
+
+        # Play advantages explanation
+        self.section_004(title)
+
+        self.pause()
 
     def section_001(self, title: Text) -> None:
         image = WrappedImage(
@@ -265,7 +276,8 @@ class UNet(Scene):
                 Convolutional3DLayer(3, 10, 10, filter_spacing=0.2),
             )
             .arrange(buff=0.01)
-            .scale(0.5).next_to(in_image, RIGHT)
+            .scale(0.5)
+            .next_to(in_image, RIGHT)
         )
 
         down_block2 = (
@@ -320,14 +332,18 @@ class UNet(Scene):
         up_block1 = (
             Group(
                 Convolutional3DLayer(3, 10, 10, color=PURPLE, filter_spacing=0.2),
-                Convolutional3DLayer(3, 10, 10, color=PURPLE, filter_spacing=0.2)
+                Convolutional3DLayer(3, 10, 10, color=PURPLE, filter_spacing=0.2),
             )
             .arrange(buff=0.01)
             .scale(0.5)
             .next_to(up_block2, UR)
         )
 
-        out_image = ImageLayer(read_image("resources/example-mask.png")).next_to(up_block1, RIGHT * 7).scale(2.0)
+        out_image = (
+            ImageLayer(read_image("resources/example-mask.png"))
+            .next_to(up_block1, RIGHT * 7)
+            .scale(2.0)
+        )
 
         skip_conn_1 = Line(start=LEFT * 3, end=RIGHT * 3).shift(UP * 1.5)
         skip_conn_2 = Line(start=LEFT * 2, end=RIGHT * 2).shift(DOWN * 1.0)
@@ -348,9 +364,10 @@ class UNet(Scene):
             arrange_layers=False,
         ).scale(0.5)
 
+        self.pause()
         self.play(FadeIn(nn))
-        self.wait()
-        
+        self.pause()
+
         self.play(
             nn.make_forward_pass_animation(run_time=15),
             repeat_animation(4, ShowPassingFlash(skip_conn_1)),
@@ -361,4 +378,20 @@ class UNet(Scene):
 
         self.play(FadeOut(nn))
 
+    def section_004(self, title) -> None:
+        text = Tex(
+            r"""
+            \begin{itemize}
+            \item Fexible
+            \item Gran precisión (dado el entrenamiento\\adecuado, dataset)
+            \item No contiene fully-connected layers
+            \item Mucho más rápido que la alternativa\\sliding window (end-to-end setting)
+            \item Funcional con poca data
+            \end{itemize}
+            """
+        )
 
+        self.play(Write(text))
+        self.pause()
+
+        self.play(Unwrite(text))
