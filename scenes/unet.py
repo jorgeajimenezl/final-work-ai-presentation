@@ -1,6 +1,7 @@
 from manim import *
 from utils import WrappedImage, read_image
 import matplotlib as mpl
+from manim_ml.neural_network.neural_network import NeuralNetwork
 
 
 def get_mask(array, colormap: str = "viridis"):
@@ -14,26 +15,29 @@ class UNet(Scene):
     def construct(self):
         # Make title
         title = Text("Detección de objectos")
-        self.play(Write(title))
-        self.pause()
+        # self.play(Write(title))
+        # self.pause()
 
         # Explanation about semantic segmentation section
-        self.section_001(title)
+        # self.section_001(title)
 
         # Change title
-        self.play(
-            title.animate.become(Text("Aplicaciones", color=BLUE).replace(title)),
-        )
+        # self.play(
+        #     title.animate.become(Text("Aplicaciones", color=BLUE).replace(title)),
+        # )
 
         # Applications section
-        self.section_002(title)
+        # self.section_002(title)
 
         # Change title
-        self.play(
-            title.animate.become(Text("Cómo resolverlo?", color=BLUE).replace(title)),
-        )
+        # self.play(
+        #     title.animate.become(
+        #         Text("Cómo resolverlo? U-Net", color=BLUE).replace(title)
+        #     ),
+        # )
 
         # Play explanation
+        self.section_003(title)
 
         self.wait()
 
@@ -164,9 +168,9 @@ class UNet(Scene):
         classes = (
             VGroup(
                 Text("..."),
-                Text("[9] Tree", color=YELLOW),
-                Text("[10] Automobile", color=GREEN),
-                Text("[11] Traffic Light", color=RED),
+                Text("[9] Árbol", color=YELLOW),
+                Text("[10] Automóvil", color=GREEN),
+                Text("[11] Luces de tráfico", color=RED),
                 Text("..."),
             )
             .arrange(DOWN, buff=MED_LARGE_BUFF)
@@ -241,3 +245,6 @@ class UNet(Scene):
         self.play(FadeIn(medical_images))
         self.pause()
         self.play(FadeOut(medical_images))
+
+    def section_003(self, title: Text) -> None:
+        pass
