@@ -1,8 +1,9 @@
 from manim import *
 from utils import WrappedImage, PixelsFromVect, read_image
+from manim_slides import *
 
 
-class ImageProcessing(Scene):
+class ImageProcessing(Slide):
     def construct(self):
         # image
         image = WrappedImage(
@@ -40,7 +41,9 @@ class ImageProcessing(Scene):
             'resources/mario_layer3.jpg'
         ]
 
+        self.pause()
         self.play(FadeIn(title), FadeIn(h_line))
+
         for i in range(4):
             cp = image.copy()
             self.add(cp)
@@ -63,7 +66,9 @@ class ImageProcessing(Scene):
                 FadeOut(pixels),
                 cp.animate.move_to(RIGHT*4)
             )
-        self.wait(2)
+            self.wait(2)
+            
+        self.pause()
         
 
             
