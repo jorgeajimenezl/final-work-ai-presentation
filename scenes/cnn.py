@@ -1,8 +1,9 @@
 from manim import *
+from manim_slides import *
 from utils import ColorVectAsCubes, CreateCubesFromCenter
 
 
-class ConvolutionalNeuralNetwork(ThreeDScene):
+class ConvolutionalNeuralNetwork(ThreeDSlide):
     def construct(self):
         self.renderer.camera.light_source.move_to(3 * IN)
         self.set_camera_orientation(phi=75 * DEGREES, theta=-75 * DEGREES)
@@ -68,6 +69,7 @@ class ConvolutionalNeuralNetwork(ThreeDScene):
             FadeIn(fully1),
             FadeIn(fully2),
         )
+        self.pause()
 
         features_text = Tex(
             r"""
@@ -112,7 +114,6 @@ class ConvolutionalNeuralNetwork(ThreeDScene):
                 (3, 3),
                 filters=3,
                 filters_colors=[RED, GREEN, BLUE],
-                buff=6,
-                fast_forward_from=10,
+                buff=6
             )
         )

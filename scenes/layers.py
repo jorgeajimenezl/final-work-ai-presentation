@@ -7,13 +7,7 @@ class Convolutional3DToImage(ConnectiveLayer):
     input_class = ImageLayer
     output_class = Convolutional3DLayer
 
-    def __init__(
-        self,
-        input_layer,
-        output_layer,
-        pulse_color=ORANGE,
-        **kwargs
-    ):
+    def __init__(self, input_layer, output_layer, pulse_color=ORANGE, **kwargs):
         super().__init__(
             input_layer,
             output_layer,
@@ -54,17 +48,12 @@ class Convolutional3DToImage(ConnectiveLayer):
     def _create_override(self, **kwargs):
         return AnimationGroup()
 
+
 class ImageToConvolutional3D(ConnectiveLayer):
     input_class = Convolutional3DLayer
     output_class = ImageLayer
 
-    def __init__(
-        self,
-        input_layer,
-        output_layer,
-        pulse_color=ORANGE,
-        **kwargs
-    ):
+    def __init__(self, input_layer, output_layer, pulse_color=ORANGE, **kwargs):
         super().__init__(
             input_layer,
             output_layer,
@@ -104,4 +93,3 @@ class ImageToConvolutional3D(ConnectiveLayer):
     @override_animation(Create)
     def _create_override(self, **kwargs):
         return AnimationGroup()
-
