@@ -1,8 +1,8 @@
 from manim import *
 from utils import WrappedImage, PixelsFromVect, read_image
+from manim_slides import *
 
-
-class ImageStrcut(Scene):
+class ImageStrcut(Slide):
     def construct(self):
         # image
         image = WrappedImage(
@@ -24,13 +24,13 @@ class ImageStrcut(Scene):
                 remover=False,
             )
         )
-        self.wait()
+        self.wait(2)
 
         self.play(
             image.animate.scale(0.7),
             cp.animate.scale(0.7),
         )
-
+        
         # braces
         braces = VGroup(*[Brace(image[0], v) for v in (LEFT, DOWN)])
         brace_labels = VGroup(*[brace.get_text("32px") for brace in braces])
@@ -44,6 +44,7 @@ class ImageStrcut(Scene):
         self.play(image.animate.move_to(LEFT * 4), cp.animate.move_to(LEFT * 4))
         self.wait()
 
+        self.pause()
         # Gray escale, transparence, color
         table = ["#B8B2B6", "#84838B", "#463F43", "#A80925", "#DA1D1D"]
         color = [WHITE, BLUE, GREEN, YELLOW, RED]
@@ -95,4 +96,4 @@ class ImageStrcut(Scene):
                 
                 change_color = str(ob[n].get_color())
 
-        self.wait()
+        self.pause()

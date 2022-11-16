@@ -1,7 +1,7 @@
 from manim import *
+from manim_slides import *
 
-
-class DepthNeuralNetwork(Scene):
+class DepthNeuralNetwork(Slide):
     def construct(self):
         title = Text("Tecnologías").scale(0.9)
         title.to_edge(UP)
@@ -29,5 +29,20 @@ class DepthNeuralNetwork(Scene):
         self.play(FadeOut(t4))
 
         dnn_image = ImageMobject('resources/deepl-learning.png').scale(1.5)
-        self.add(dnn_image)
+        self.play(FadeIn(dnn_image))
         self.wait(2)
+        self.pause()
+
+        self.play(FadeOut(dnn_image))
+        self.play(Transform(title, Text('¿Deep Learning en el mundo profesional?', color=BLUE).move_to(title)))
+        dnn1 = ImageMobject('resources/dnn1.jpg').scale(0.5)
+        dnn2 = ImageMobject('resources/dnn2.jpg').scale(1.1)
+        dnn3 = ImageMobject('resources/dnn3.jpg').scale(1.9)
+        self.play(FadeIn(dnn1.to_edge(LEFT)))
+        self.play(FadeIn(dnn2.next_to(dnn1)))
+        self.play(FadeIn(dnn3.next_to(dnn2)))
+
+        self.wait(2)
+
+
+

@@ -1,8 +1,9 @@
 from manim import *
 from utils import WrappedImage, PixelsFromVect, read_image
+from manim_slides import *
 
 
-class ComputerVision(Scene):
+class ComputerVision(Slide):
     def construct(self):
         #text
         proc = Text('Procesamiento')
@@ -12,7 +13,7 @@ class ComputerVision(Scene):
        
         self.play(FadeIn(op), FadeIn(proc.next_to(op, LEFT)), FadeIn(text.next_to(op, RIGHT)))
        
-        self.wait(3)
+        self.pause()
         self.play(Transform(text,Text('Análisis').move_to(text)))
         self.pause()
         #self.play(Create(SurroundingRectangle(text, buff=SMALL_BUFF, stroke_color=WHITE)))
@@ -32,6 +33,7 @@ class ComputerVision(Scene):
 
         self.play(Create(men.next_to(arr_left, DOWN)))
         self.play(Create(SurroundingRectangle(men, buff=SMALL_BUFF, stroke_color=WHITE)))
+        self.pause()
 
         # image
         lung_image = ImageMobject('resources/lung.png').scale(0.5)
@@ -39,7 +41,6 @@ class ComputerVision(Scene):
         cv_image = ImageMobject('resources/cv.png').scale(1.4)
         self.add(lung_image.next_to(men, DOWN))
         self.add(vibrio_image.next_to(lung_image, DOWN))
-
         self.pause()
 
         self.play(Create(pc.next_to(arr_right, DOWN)))
@@ -50,3 +51,4 @@ class ComputerVision(Scene):
         self.add(cv_image.next_to(cv, DOWN))
 
         self.wait(2)
+        self.pause()
